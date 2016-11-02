@@ -4,6 +4,8 @@ var hbs = require('express-handlebars');
 //var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 
 // load .env
 require('dotenv').config();
@@ -22,13 +24,17 @@ app.use(session({
         httpOnly: true,
         maxAge: 1000 * 60 * 24 * 7
     },
+    //Updates the session even if there were no updates
+    resave: false, 
+    //Creates a new session for every user
+    saveUninitialized: true, 
     // add session store
     store: new MongoStore({
         url: process.env.DB_URL
     })
 }));
 
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     res.locals.flash = req.session.flash;
     delete req.session.flash;
     next();
@@ -40,18 +46,30 @@ app.engine('handlebars', hbs({
 }));
 app.set('view engine', 'handlebars');
 
+// setup cookierParser and bodyParser before our routes
+// that depend on them
+
+app.use(cookieParser({
+    secret: process.env.cookieSecret
+}));
+// add form fields to req.body, ie.e. req.body.username
+app.use(bodyParser.json());
+app.use(bodyParster.urlencoded({
+    extended: false
+}));
+
 // home page
 app.get('/', function (req, res) {
-    if( req.session.treat){
+    if (req.session.treat) {
         return res.render('view', {
             msg: 'You have a treat: ' + req.session.treat
         });
     }
-//        if (req.signedCookies.treat) {
-//            return res.render('view', {
-//                msg: 'You have a treat: ' + req.signedCookies.treat
-//            });
-//        }
+    //        if (req.signedCookies.treat) {
+    //            return res.render('view', {
+    //                msg: 'You have a treat: ' + req.signedCookies.treat
+    //            });
+    //        }
     return res.render('view', {
         msg: 'No treats.'
     });
@@ -65,10 +83,10 @@ app.get('/treat', function (req, res) {
         header: 'You got a treat',
         body: 'the treat is ' + req.session.treat
     };
-        //    res.cookie('treat', 'candy corn',{
-        //        httpOnly: true,
-        ////        signed: true
-        //    });
+    //    res.cookie('treat', 'candy corn',{
+    //        httpOnly: true,
+    ////        signed: true
+    //    });
     res.redirect('/');
 });
 
