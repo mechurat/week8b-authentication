@@ -6,7 +6,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-
+var mongoose = require('mongoose');
 // load .env
 require('dotenv').config();
 
@@ -16,6 +16,7 @@ var PORT = process.env.PORT || 8081;
 
 // Cookie Secret in .env
 //app.use(cookieParser(process.env.cookieSecret));
+app.use(cookieParser());
 
 // creating Session
 app.use(session({
@@ -48,15 +49,19 @@ app.set('view engine', 'handlebars');
 
 // setup cookierParser and bodyParser before our routes
 // that depend on them
-
-app.use(cookieParser({
-    secret: process.env.cookieSecret
-}));
 // add form fields to req.body, ie.e. req.body.username
 app.use(bodyParser.json());
-app.use(bodyParster.urlencoded({
+app.use(bodyParser.urlencoded({
     extended: false
 }));
+
+// connect to database
+mongoose.connect(process.env.DB_URL);
+
+var options = {};
+var auth = require('./lib/auth')(app, options);
+auth.init(); // setupmiddleware
+auth.registerRoutes();
 
 // home page
 app.get('/', function (req, res) {
