@@ -33,7 +33,8 @@ In **module.exports** we are returning two methods. Init and registerRoutes. Ini
 
 Handlebars will allow us to setup routes based on a user being signed in our not. See this [slide](https://docs.google.com/presentation/d/1vYs67CP7RVaqPIv2tcjcqzD8i0w6eSAuuWL2E2Zgyhs/edit#slide=id.g139635eed8_0_284). See code [/views/layouts/main.handlebars](https://github.com/mechurat/week8b-authentication/blob/master/views/view.handlebars) lines 23-32. 
 
-Routes will be posted in /lib/auth.js in the registerRoutes() method. [SLIDES](https://docs.google.com/presentation/d/1vYs67CP7RVaqPIv2tcjcqzD8i0w6eSAuuWL2E2Zgyhs/edit#slide=id.g139635eed8_0_292)
+Routes will be posted in [/lib/auth.js](https://github.com/mechurat/week8b-authentication/blob/master/lib/auth.js) in the registerRoutes() method. [SLIDES](https://docs.google.com/presentation/d/1vYs67CP7RVaqPIv2tcjcqzD8i0w6eSAuuWL2E2Zgyhs/edit#slide=id.g139635eed8_0_292)
 
+Follow the slides for directions on how to implement the code for Login/Sign up/Logout from auth.js.
 
 ## Authorization - Week 9a
